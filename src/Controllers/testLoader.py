@@ -1,5 +1,6 @@
 import pandas as pd
 
+from Models.mainDataContainer import mainDataContainer
 
 class TestLoader:
     global instance
@@ -18,6 +19,6 @@ class TestLoader:
                 TestLoader.handleTest(pd.read_excel(_excelfile,_sheet))
 
 
-    def handleTest():
-
+    def handleTest(_testSheet):
+        a = mainDataContainer()
         return 0

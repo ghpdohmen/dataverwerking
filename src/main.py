@@ -1,11 +1,14 @@
-
-
-
+from tkinter import *
+from tkinter import ttk
+from tkinter import Tk
 from Controllers.testLoader import TestLoader
+from tkinter.filedialog import askopenfilename
 
 
-klassen = []
+global klassen 
+global students
 
+Tk().withdraw()
+filename = askopenfilename()
 
-
-TestLoader.loadFile("C:\\Users\\guusd\\Documents\\GitHub\\dataverwerking\\test\\testData.xlsx")
+TestLoader.loadFile(filename)
