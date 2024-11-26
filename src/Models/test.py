@@ -3,6 +3,7 @@ class Test:
     date = None #test date
     maxPoints = 0 #max number of points on test
     nTerm = 0 #grading term
+    numberOfQuestions = 0 #number of questiosn on test
     testResults = [] #all results of this test
     questions = [] #all questions of this test
 
@@ -11,9 +12,9 @@ class Test:
     def __init__(self, _name):
         self.name = _name
 
-    def __init__(self, _name, _age):
+    def __init__(self, _name, _date):
         self.name = _name
-        self.age = _age
+        self.date = _date
 
     def average(self):
         return 0

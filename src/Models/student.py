@@ -1,8 +1,8 @@
 class Student:
     name = None #student name
-    klas = None #in which group is this student?
+    group = None #in which group is this student?
     testResults = None
 
-    def __init__(self,_name,_klas) -> None:
+    def __init__(self,_name,_group) -> None:
         self.name = _name
-        self.klas = _klas
+        self.group = _group
