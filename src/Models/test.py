@@ -3,7 +3,7 @@ class Test:
     date = None #test date
     maxPoints = 0 #max number of points on test
     nTerm = 0 #grading term
-    numberOfQuestions = 0 #number of questiosn on test
+    numberOfQuestions = 0 #number of questions on test
     testResults = [] #all results of this test
     questions = [] #all questions of this test
 

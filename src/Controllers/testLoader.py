@@ -39,14 +39,14 @@ class TestLoader:
         _test = Test(_testName,_testDate)
         _test.nTerm = _testSheet.values[0][5]
         _test.maxPoints = _testSheet.columns[5]
-        _test.numberOfQuestions = _testSheet.columns[7]
+        _test.numberOfQuestisons = _testSheet.columns[7]
         print("\n\nProcessing " + str(_test.name) + " taken at " + str(_test.date) + " with " + str(_test.numberOfQuestions) + " questions.\n")
 
         #read questions
         _questionLoop = 0
         while _questionLoop < _test.numberOfQuestions:
             _q = Question(_testSheet.values[1,_questionLoop+3],_testSheet.values[2,_questionLoop+3], _testSheet.values[3,_questionLoop+3], _testSheet.values[4,_questionLoop+3])
-            print(str(_q.name) + " , " + str(_q.typeOfQuestion))
+            print(str(_q.name) + " , " + str(_q.typeOfQuestion), _questionLoop)
             _questionLoop += 1
 
 
