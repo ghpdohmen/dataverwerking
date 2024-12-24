@@ -39,7 +39,7 @@ class TestLoader:
         _test = Test(_testName,_testDate)
         _test.nTerm = _testSheet.values[0][5]
         _test.maxPoints = _testSheet.columns[5]
-        _test.numberOfQuestisons = _testSheet.columns[7]
+        _test.numberOfQuestions = _testSheet.columns[7]
         print("\n\nProcessing " + str(_test.name) + " taken at " + str(_test.date) + " with " + str(_test.numberOfQuestions) + " questions.\n")
 
         #read questions
@@ -99,6 +99,8 @@ def checkIfGroupExists(_groupName):
                 continue #continue looping
         return None
 
+
+
 def processTest(_row,_test):
         #process student
         #print(_row)
@@ -110,7 +112,7 @@ def processTest(_row,_test):
         _testScore = TestResult(_student,_scores,_test)
         _test.testResults.append(_testScore)
         #TODO: fix this
-        #_student.testResults.append(_testScore)
+        _student.testResults.append(_testScore)
         _testScore.calcGrade()
         return _testScore
 
@@ -124,7 +126,7 @@ def addStudent(_row):
         print("Added " + _name + " to the list.")
         _student = Student(_name, _group)
         DataContainer.instance.students.append(_student)
-        return 0
+        return _student
     
 def addGroup(_name):
         _group = StudentGroup(_name)

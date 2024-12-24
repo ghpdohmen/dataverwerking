@@ -6,3 +6,4 @@ class Student:
     def __init__(self,_name,_group) -> None:
         self.name = _name
         self.group = _group
+        self.testResults = []
