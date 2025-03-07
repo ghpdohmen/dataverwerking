@@ -1,3 +1,5 @@
+import statistics
+
 class Test:
     name = None #string, test name
     date = None #test date
@@ -17,12 +19,15 @@ class Test:
         self.date = _date
 
     def average(self):
-        return 0
+        _data = [t.grade for t in self.testResults]
+        return statistics.mean(_data)
     
     def stdev(self):
-        return 0
+        _data = [t.grade for t in self.testResults]
+        return statistics.stdev(_data)
     
     def median(self):
-        return 0
+        _data = [t.grade for t in self.testResults]
+        return statistics.median(_data)
 
     

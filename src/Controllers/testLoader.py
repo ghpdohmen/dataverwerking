@@ -45,7 +45,7 @@ class TestLoader:
         #read questions
         _questionLoop = 0
         while _questionLoop < _test.numberOfQuestions:
-            _q = Question(_testSheet.values[1,_questionLoop+3],_testSheet.values[2,_questionLoop+3], _testSheet.values[3,_questionLoop+3], _testSheet.values[4,_questionLoop+3])
+            _q = Question(_testSheet.values[1,_questionLoop+3],_testSheet.values[2,_questionLoop+3], _testSheet.values[3,_questionLoop+3], _testSheet.values[4,_questionLoop+3], _questionLoop)
             print(str(_q.name) + " , " + str(_q.typeOfQuestion), _questionLoop)
             _questionLoop += 1
 
@@ -60,6 +60,8 @@ class TestLoader:
         #debug prints
         #print(_test)
         #print(_testSheet)
+        print(str(_test.average()) + " , " + str(_test.median()) + " , " + str(_test.average()))
+        DataContainer.instance.tests.append(_test) #add to overal test list
         return 0
     
 def checkIfStudentExists(_studentName):
@@ -108,7 +110,8 @@ def processTest(_row,_test):
         if (_student == None):
             #student doesn't exist, so let's create them.
             _student = addStudent(_row)
-        _scores = pd.DataFrame(_row).truncate(before=3,axis=1).values.tolist()
+        _scores = pd.DataFrame(_row).truncate(before=3,axis=0).values
+        #print(pd.DataFrame(_row).truncate(before=3,axis=0).values.tolist())
         _testScore = TestResult(_student,_scores,_test)
         _test.testResults.append(_testScore)
         #TODO: fix this
@@ -122,13 +125,15 @@ def addStudent(_row):
         _group = checkIfGroupExists(_groupName)
         if(_group == None):
             #group doesn't exists, so let's create it
-            addGroup(_groupName)
+            _group = addGroup(_groupName)
         print("Added " + _name + " to the list.")
         _student = Student(_name, _group)
+        _group.students.append(_student)
         DataContainer.instance.students.append(_student)
         return _student
     
 def addGroup(_name):
         _group = StudentGroup(_name)
         DataContainer.instance.groups.append(_group)
+        return _group
         print("Added " + _name + " to the list.")
