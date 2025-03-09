@@ -14,6 +14,9 @@ class DataContainer:
     groupDatasheetTitle = "Klasgegevens"
     groupDatasheetTitle2 = "Grafiek met gemiddeldes van alle toetsen"
     groupDatasheetTitle3 = "Toetsresultaten"
+    groupDatasheetGraphTitle1 = "Cijfers"
+    groupDataSheetGraphTitle2 = "Moeilijkheidsgraad"
+    groupDatasheetGraphTitle3 = "Type vraag"
 
     def __init__(self,a) -> None:
         if(DataContainer.instance):

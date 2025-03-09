@@ -36,10 +36,12 @@ class TestLoader:
         #read general test data
         _testName = _testSheet.columns[1]
         _testDate = _testSheet.values[0][1]
+        _test = None
         _test = Test(_testName,_testDate)
         _test.nTerm = _testSheet.values[0][5]
         _test.maxPoints = _testSheet.columns[5]
         _test.numberOfQuestions = _testSheet.columns[7]
+        _test.version = _testSheet.values[0][7] #load test version, might be None
         print("\n\nProcessing " + str(_test.name) + " taken at " + str(_test.date) + " with " + str(_test.numberOfQuestions) + " questions.\n")
 
         #read questions
@@ -47,6 +49,7 @@ class TestLoader:
         while _questionLoop < _test.numberOfQuestions:
             _q = Question(_testSheet.values[1,_questionLoop+3],_testSheet.values[2,_questionLoop+3], _testSheet.values[3,_questionLoop+3], _testSheet.values[4,_questionLoop+3], _questionLoop)
             print(str(_q.name) + " , " + str(_q.typeOfQuestion), _questionLoop)
+            _test.questions.append(_q)
             _questionLoop += 1
 
 
@@ -114,7 +117,6 @@ def processTest(_row,_test):
         #print(pd.DataFrame(_row).truncate(before=3,axis=0).values.tolist())
         _testScore = TestResult(_student,_scores,_test)
         _test.testResults.append(_testScore)
-        #TODO: fix this
         _student.testResults.append(_testScore)
         _testScore.calcGrade()
         return _testScore

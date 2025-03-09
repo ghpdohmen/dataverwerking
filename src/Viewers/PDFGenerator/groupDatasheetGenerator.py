@@ -10,6 +10,8 @@ from reportlab.graphics.shapes import Drawing
 import matplotlib.pyplot as plt
 from svglib.svglib import svg2rlg
 from reportlab.graphics import renderPDF
+import matplotlib.ticker as mtick
+from matplotlib.ticker import PercentFormatter
 
 
 def generatePDF(_group):
@@ -120,15 +122,17 @@ def generatePDF(_group):
     #_averagesDrawing.drawOn(c,int(width*0.1),int(height*0.2))
     _averagesDrawing = generateBarChartMatPlotLib(_testAverages,_testNames, width*0.8, width*0.8)
     renderPDF.draw(_averagesDrawing,c,0,height*0.2)
+    c.showPage()
 
     ###############################################################################
     #                          per test scores pages                              #
     ###############################################################################
     for _test in DataContainer.instance.tests:
-        generateTestScorePage(c,_test) #generates a page for each test
+        generateTestScorePage(c,_test,width,height) #generates a page for each test
 
 
     c.save()
+    print("Finished generating group data PDF of " + _groupName)
 
 #generatePDF("test")
 def generateBarChartMatPlotLib (_data, _labels,_figwidth,_figheight):
@@ -146,6 +150,7 @@ def generateBarChartMatPlotLib (_data, _labels,_figwidth,_figheight):
     _fig = plt.figure()
     plt.bar(x=_labels,height=_data,facecolor=DataContainer.instance.colorHex1, edgecolor=DataContainer.instance.colorHex3,linewidth=2, )
     #plt.ax
+    plt.ylim([1,10])
     _imgData = BytesIO()
     _fig.savefig(_imgData, format='svg')
     _fig.set_size_inches(_figwidth/72,_figheight/72)
@@ -153,21 +158,129 @@ def generateBarChartMatPlotLib (_data, _labels,_figwidth,_figheight):
     _drawing = svg2rlg(_imgData)
     return _drawing
 
-def generateTestScorePage(_canvas,_test):
+def generateTestScorePage(_canvas,_test,_width,_height):
     """Generates a page with graphs of a specific test, specified on a group level
 
     Args:
         _canvas (Canvas): Canvas to draw on
         _test (test): Test to process
     """
-    c.doForm("standardDataPage")
+    _canvas.doForm("standardDataPage")
     #title
-    c.setLineWidth(10)
-    averagesTitleText = c.beginText(width*0.05,height*0.9)
+    _canvas.setLineWidth(10)
+    averagesTitleText = _canvas.beginText(_width*0.05,_height*0.9)
     averagesTitleText.setFont("Helvetica",24)
     averagesTitleText.setFillColor(colors.HexColor(DataContainer.instance.colorHex1))
-    averagesTitleText.textLine(DataContainer.instance.groupDatasheetTitle3 +" " +_test.name)
-    c.drawText(averagesTitleText)
+    if(_test.version != None):
+        averagesTitleText.textLine(DataContainer.instance.groupDatasheetTitle3 +" " +_test.name + " " + _test.version)
+    else:
+        averagesTitleText.textLine(DataContainer.instance.groupDatasheetTitle3 +" " +_test.name)
+    _canvas.drawText(averagesTitleText)
+    #TODO: add data about test (number of students, number of points, n-term etc.)
 
-    #generate bar graph with grades in boxes per grade.
+    #generate diagrams
+    _diagramsDrawing = generateTestDiagramsMatPlotLib(_test,_width*0.8,_width*0.8)
+    renderPDF.draw(_diagramsDrawing,_canvas,0,_height*0.1)
+
+
+    #end page
+    _canvas.showPage()
+
+def generateTestDiagramsMatPlotLib(_test,_figwidth,_figheight):
+    #generate figure:
+    _fig, ((ax1,ax2),(ax3,ax4)) = plt.subplots(2,2)
+    _fig.set_size_inches(_figwidth/72,_figheight/72)
+
+    #grades
+    _grades = []
+    for _tr in _test.testResults:
+        _grades.append(_tr.grade)
+        
+    #generate histogram of grades
+    _bins = [0,1,2,3,4,5,6,7,8,9,10]
+    ax1.hist(x=_grades,bins=_bins,facecolor=DataContainer.instance.colorHex1, edgecolor=DataContainer.instance.colorHex3,linewidth=2, )
+    ax1.set_title(DataContainer.instance.groupDatasheetGraphTitle1)
+
+    #difficulty of questions
+    _difficultyDictionaryScores = {}
+    _difficultyDictionaryNofQuestions = {}
+    for _tr in _test.testResults:
+        #loop through all results of test (thus each student)
+        _i = 0
+        _questionDifficultyLabelArray = []
+        _questionDifficultyDataArray = []
+        for _score in _tr.scores:
+            #loop over all scores (score on a question) for this student and add them to the array
+            _questionDifficultyDataArray.append(_score/_test.questions[_i].maxPoints)
+            _questionDifficultyLabelArray.append(_test.questions[_i].difficulty)
+            _i += 1
+        _i = 0
+        for _dataPacket in _questionDifficultyLabelArray:     
+            try:
+                _difficultyDictionaryScores[_dataPacket] += _questionDifficultyDataArray[_i]
+                _difficultyDictionaryNofQuestions[_dataPacket] += 1
+            except KeyError:
+                #if difficulty is not yet in the dictionary, make sure we set it to 0 to initialize
+                _difficultyDictionaryScores[_dataPacket] = 0
+                _difficultyDictionaryNofQuestions[_dataPacket] = 0
+            except:
+                print("error in dictionary in generating difficulty diagram")
+                raise
+            _i += 1
+    _difficultyDictionaryPercentage = {}
+    #calculate percentages for each type of question
+    for key in _difficultyDictionaryScores:
+        _difficultyDictionaryPercentage[key] = _difficultyDictionaryScores[key]/_difficultyDictionaryNofQuestions[key]
+    #generate bar chart of difficulty
+    ax2.bar(x=_difficultyDictionaryPercentage.keys(),height=_difficultyDictionaryPercentage.values(),facecolor=DataContainer.instance.colorHex1, edgecolor=DataContainer.instance.colorHex3,linewidth=2, )
+    ax2.set_title(DataContainer.instance.groupDataSheetGraphTitle2)
+    ax2.yaxis.set_major_formatter(mtick.PercentFormatter(1.0))
+    ax2.set_ylim([0,1])
+        
+    #type of questions
+    _typeDictionaryScores = {}
+    _typeDictionaryNofQuestions = {}
+    for _tr in _test.testResults:
+        #loop through all results of test (thus each student)
+        _i = 0
+        _questionTypeLabelArray = []
+        _questionTypeDataArray = []
+        for _score in _tr.scores:
+            #loop over all scores (score on a question) for this student and add them to the array
+            _questionTypeDataArray.append(_score/_test.questions[_i].maxPoints)
+            _questionTypeLabelArray.append(_test.questions[_i].typeOfQuestion)
+            _i += 1
+        _i = 0
+        for _dataPacket in _questionTypeLabelArray:     
+            try:
+                _typeDictionaryScores[_dataPacket] += _questionTypeDataArray[_i]
+                _typeDictionaryNofQuestions[_dataPacket] += 1
+            except KeyError:
+                #if difficulty is not yet in the dictionary, make sure we set it to 0 to initialize
+                _typeDictionaryScores[_dataPacket] = 0
+                _typeDictionaryNofQuestions[_dataPacket] = 0
+            except:
+                print("error in dictionary in generating difficulty diagram")
+                raise
+            _i += 1
+    _typeDictionaryPercentage = {}
+    #calculate percentages for each type of question
+    for key in _typeDictionaryScores:
+        _typeDictionaryPercentage[key] = _typeDictionaryScores[key]/_typeDictionaryNofQuestions[key]
+    #generate bar chart of type of questions
+    ax3.bar(x=_typeDictionaryPercentage.keys(),height=_typeDictionaryPercentage.values(),facecolor=DataContainer.instance.colorHex1, edgecolor=DataContainer.instance.colorHex3,linewidth=2, )
+    ax3.set_title(DataContainer.instance.groupDatasheetGraphTitle3)
+    ax3.yaxis.set_major_formatter(mtick.PercentFormatter(1.0))
+    ax3.set_ylim([0,1])
+
+    #TODO: figure out 4th plot
+
+
     
+
+    #save image to drawing for embedding into PDF
+    _imgData = BytesIO()
+    _fig.savefig(_imgData, format='svg')
+    _imgData.seek(0)
+    _drawing = svg2rlg(_imgData)
+    return _drawing
