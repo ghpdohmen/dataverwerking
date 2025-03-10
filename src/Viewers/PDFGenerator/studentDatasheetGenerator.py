@@ -17,7 +17,9 @@ from matplotlib.ticker import PercentFormatter
 def generatePDF(_student):
     """Generates the PDF which shows the test data of a specific student. shows the following data:
         * Averages of all tests in a bar graph
-        * A per test overview of 
+        * A per test overview of the percentage of points scored per question
+        * A per test overview of the percentage of points scored per difficulty
+        * A per test overview of the percentage of points scored per type
 
     Args:
         _student (Student): student to generate the PDF of
@@ -33,13 +35,13 @@ def generatePDF(_student):
     #Top text:
     c.setLineWidth(14)
     
-    groupNameText = c.beginText(width*0.4,height*0.8)
+    groupNameText = c.beginText(width*0.1,height*0.8)
     groupNameText.setFont("Helvetica",72)
     groupNameText.setFillColor(colors.HexColor(DataContainer.instance.colorHex1))
     groupNameText.textLine(_studentName)
     groupNameText.setTextOrigin(width/2-groupNameText.getCursor()[0]/2,height*0.8)
     c.drawText(groupNameText)
-    infoText = c.beginText(width*0.3,height*0.7)
+    infoText = c.beginText(width*0.1,height*0.7)
     infoText.setFont("Helvetica",24)
     infoText.setFillColor(colors.HexColor(DataContainer.instance.colorHex3))
     infoText.textLine(DataContainer.studentDatasheetTitle + " " + DataContainer.subject)
@@ -161,6 +163,7 @@ def generateBarChartMatPlotLib (_data, _labels,_figwidth,_figheight):
     _fig.set_size_inches(_figwidth/72,_figheight/72)
     _imgData.seek(0)
     _drawing = svg2rlg(_imgData)
+    plt.close()
     return _drawing
 
 
@@ -197,6 +200,17 @@ def generateTestScorePage(_canvas,_test,_student,_width,_height):
     _canvas.showPage()
 
 def generateTestDiagramsMatPlotLib(_test,_student,_figwidth,_figheight):
+    """Generates the 4 per test diagrams of this specific student
+
+    Args:
+        _test (Test): test to be analyzed
+        _student (Student): student to be analyzed
+        _figwidth (float): width of the figure
+        _figheight (float): height of the figure
+
+    Returns:
+        Drawing: generated figure
+    """
     #generate figure:
     _fig, ((ax1,ax2),(ax3,ax4)) = plt.subplots(2,2)
     _fig.set_size_inches(_figwidth/72,_figheight/72)
@@ -289,6 +303,7 @@ def generateTestDiagramsMatPlotLib(_test,_student,_figwidth,_figheight):
     #save image to drawing for embedding into PDF
     _imgData = BytesIO()
     _fig.savefig(_imgData, format='svg')
+    plt.close()
     _imgData.seek(0)
     _drawing = svg2rlg(_imgData)
     return _drawing

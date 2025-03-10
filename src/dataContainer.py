@@ -17,7 +17,7 @@ class DataContainer:
     groupDatasheetGraphTitle1 = "Cijfers"
     groupDataSheetGraphTitle2 = "Moeilijkheidsgraad"
     groupDatasheetGraphTitle3 = "Type vraag"
-    studentDatasheetTitle = "leerlinggegevens"
+    studentDatasheetTitle = "Leerlinggegevens"
 
     def __init__(self,a) -> None:
         if(DataContainer.instance):
@@ -26,12 +26,28 @@ class DataContainer:
         pass
 
     def findGroup(self, _name):
+        """Find a specific group by name
+
+        Args:
+            _name (String): name of the group
+
+        Returns:
+            Group: either None if no group was found or the specified group
+        """
         for _g in self.groups:
             if _g.name == _name:
                 return _g
         return
     
     def findStudent(self, _name):
+        """Find a specific student by name
+
+        Args:
+            _name (String): name of the student (first + " " + last)
+
+        Returns:
+            Student: either None if no student was found or the specified student
+        """
         for _s in self.students:
             if _s.name == _name:
                 return _s

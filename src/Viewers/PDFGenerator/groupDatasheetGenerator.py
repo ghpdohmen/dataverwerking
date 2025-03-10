@@ -157,6 +157,7 @@ def generateBarChartMatPlotLib (_data, _labels,_figwidth,_figheight):
     _fig.set_size_inches(_figwidth/72,_figheight/72)
     _imgData.seek(0)
     _drawing = svg2rlg(_imgData)
+    plt.close()
     return _drawing
 
 def generateTestScorePage(_canvas,_test,_width,_height):
@@ -292,6 +293,7 @@ def generateTestDiagramsMatPlotLib(_test,_figwidth,_figheight):
     #save image to drawing for embedding into PDF
     _imgData = BytesIO()
     _fig.savefig(_imgData, format='svg')
+    plt.close()
     _imgData.seek(0)
     _drawing = svg2rlg(_imgData)
     return _drawing

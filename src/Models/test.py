@@ -32,14 +32,29 @@ class Test:
         self.version = None
 
     def average(self):
+        """Calculates the average grade of the test
+
+        Returns:
+            float: mean of all results
+        """
         _data = [t.grade for t in self.testResults]
         return statistics.mean(_data)
     
     def stdev(self):
+        """Calculates the standard deviation of all test grades
+
+        Returns:
+            float: stdev
+        """
         _data = [t.grade for t in self.testResults]
         return statistics.stdev(_data)
     
     def median(self):
+        """Calculates the median of all test grades
+
+        Returns:
+            float: median
+        """
         _data = [t.grade for t in self.testResults]
         return statistics.median(_data)
 
