@@ -17,6 +17,7 @@ class DataContainer:
     groupDatasheetGraphTitle1 = "Cijfers"
     groupDataSheetGraphTitle2 = "Moeilijkheidsgraad"
     groupDatasheetGraphTitle3 = "Type vraag"
+    studentDatasheetTitle = "leerlinggegevens"
 
     def __init__(self,a) -> None:
         if(DataContainer.instance):
@@ -28,4 +29,10 @@ class DataContainer:
         for _g in self.groups:
             if _g.name == _name:
                 return _g
+        return
+    
+    def findStudent(self, _name):
+        for _s in self.students:
+            if _s.name == _name:
+                return _s
         return
