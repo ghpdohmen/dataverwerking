@@ -12,7 +12,8 @@ Tk().withdraw()
 filename = askopenfilename()
 
 TestLoader.loadFile(filename)
-for _group in dataContainer.DataContainer.instance.groups:
-    groupDatasheetGenerator.generatePDF(_group)
-for _student in dataContainer.DataContainer.instance.students:
-    studentDatasheetGenerator.generatePDF(_student)
+#for _group in dataContainer.DataContainer.instance.groups:
+#    groupDatasheetGenerator.generatePDF(_group)
+#for _student in dataContainer.DataContainer.instance.students:
+#    studentDatasheetGenerator.generatePDF(_student)
+studentDatasheetGenerator.generatePDF(dataContainer.DataContainer.instance.findStudent("Daan van Och"))

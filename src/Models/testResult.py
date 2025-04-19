@@ -6,11 +6,13 @@ class TestResult:
     grade = 0
     scores = None
     test = None
+    testID = None
 
     def __init__(self,_student,_scores, _test):
         self.student = _student
         self.scores = list(map(int, _scores))
         self.test = _test
+        self.testID = _test.ID
         self.grade = 0
         pass
 

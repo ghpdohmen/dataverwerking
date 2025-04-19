@@ -1,3 +1,4 @@
+from datetime import date
 import pandas as pd
 
 
@@ -12,6 +13,11 @@ from dataContainer import DataContainer
 class TestLoader:
 
     def loadFile(_fileName):
+        """Loads a file and starts processing it as a test
+
+        Args:
+            _fileName (String): path to the file
+        """
         _excelfile = pd.ExcelFile(_fileName)
         print(_excelfile.sheet_names)
         for _sheet in _excelfile.sheet_names:
@@ -35,7 +41,7 @@ class TestLoader:
         
         #read general test data
         _testName = _testSheet.columns[1]
-        _testDate = _testSheet.values[0][1]
+        _testDate = excelDateConverter(str(_testSheet.values[0][1]))
         _test = None
         _test = Test(_testName,_testDate)
         _test.nTerm = _testSheet.values[0][5]
@@ -47,7 +53,7 @@ class TestLoader:
         #read questions
         _questionLoop = 0
         while _questionLoop < _test.numberOfQuestions:
-            _q = Question(_testSheet.values[1,_questionLoop+3],_testSheet.values[2,_questionLoop+3], _testSheet.values[3,_questionLoop+3], _testSheet.values[4,_questionLoop+3], _questionLoop)
+            _q = Question(_testSheet.values[1,_questionLoop+3],_testSheet.values[2,_questionLoop+3], _testSheet.values[3,_questionLoop+3], _testSheet.values[4,_questionLoop+3], _questionLoop,_test.id)
             print(str(_q.name) + " , " + str(_q.typeOfQuestion), _questionLoop)
             _test.questions.append(_q)
             _questionLoop += 1
@@ -63,7 +69,7 @@ class TestLoader:
         #debug prints
         #print(_test)
         #print(_testSheet)
-        print(str(_test.average()) + " , " + str(_test.median()) + " , " + str(_test.average()))
+        print(str(_test.average()) + " , " + str(_test.median()) + " , " + str(_test.stdev()))
         DataContainer.instance.tests.append(_test) #add to overal test list
         return 0
     
@@ -139,3 +145,17 @@ def addGroup(_name):
         DataContainer.instance.groups.append(_group)
         return _group
         print("Added " + _name + " to the list.")
+
+def excelDateConverter(_excelDate):
+    """converts a string date from excel to a python date object
+
+    Args:
+        _excelDate (String): excel date in format:"yyyy-mm-dd hh:mm:ss"
+
+    Returns:
+        date: python date object
+    """
+    _str = _excelDate.split(" ")[0]
+    _yearMonthDay = _str.split("-")
+    _d = date(int(_yearMonthDay[0]),int(_yearMonthDay[1]),int(_yearMonthDay[2]))
+    return _d

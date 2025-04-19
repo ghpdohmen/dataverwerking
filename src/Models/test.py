@@ -1,8 +1,10 @@
+from datetime import date
 import statistics
 
 class Test:
     name = None #string, test name
     date = None #test date
+    id = None #test ID
     version = None #gives version of the test, if applicable
     maxPoints = 0 #max number of points on test
     nTerm = 0 #grading term
@@ -15,6 +17,7 @@ class Test:
     def __init__(self, _name):
         self.name = _name
         self.date = None
+        self.id = _name.replace(" ","")
         self.questions = []
         self.testResults = []
         self.nTerm = 0
@@ -25,6 +28,7 @@ class Test:
     def __init__(self, _name, _date):
         self.name = _name
         self.date = _date
+        self.id = _name.replace(" ","") + _date.isoformat()
         self.questions = []
         self.testResults = []
         self.nTerm = 0

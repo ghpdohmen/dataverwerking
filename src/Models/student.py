@@ -12,7 +12,7 @@ class Student:
         """Checks if a specific test was taken by the student. If so, returns the test
 
         Args:
-            _test (Test): test to
+            _test (Test): test to check
 
         Returns:
             TestResult: result of the test
