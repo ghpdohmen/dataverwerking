@@ -12,7 +12,7 @@ class TestResult:
         self.student = _student
         self.scores = list(map(int, _scores))
         self.test = _test
-        self.testID = _test.ID
+        self.testID = _test.id
         self.grade = 0
         pass
 

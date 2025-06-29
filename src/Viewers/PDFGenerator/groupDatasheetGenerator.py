@@ -297,3 +297,16 @@ def generateTestDiagramsMatPlotLib(_test,_figwidth,_figheight):
     _imgData.seek(0)
     _drawing = svg2rlg(_imgData)
     return _drawing
+
+def generateIntroductionPage(_canvas,_width,_height):
+    #TODO: make this page easily changeable
+    #title
+    _canvas.setLineWidth(10)
+    introductionTitleText = _canvas.beginText(_width*0.05,_height*0.9)
+    introductionTitleText.setFont("Helvetica",24)
+    introductionTitleText.setFillColor(colors.HexColor(DataContainer.instance.colorHex1))
+    introductionTitleText.textLine("Toelichting bij dit document")
+    _canvas.drawText(introductionTitleText)
+
+    #Introduction Paragrah
+    return
