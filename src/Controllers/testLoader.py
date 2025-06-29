@@ -128,14 +128,16 @@ def processTest(_row,_test):
         return _testScore
 
 def addStudent(_row):
-        _name = _row[0] + " " + _row[1]
+        _firstName = _row[0]
+        _lastName = _row[1]
+        _name = _firstName + " " + _lastName
         _groupName = _row[2]
         _group = checkIfGroupExists(_groupName)
         if(_group == None):
             #group doesn't exists, so let's create it
             _group = addGroup(_groupName)
         print("Added " + _name + " to the list.")
-        _student = Student(_name, _group)
+        _student = Student(_firstName,_lastName, _group)
         _group.students.append(_student)
         DataContainer.instance.students.append(_student)
         return _student

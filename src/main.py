@@ -12,9 +12,9 @@ Tk().withdraw()
 filename = askopenfilename()
 
 TestLoader.loadFile(filename)
-for _group in dataContainer.DataContainer.instance.groups:
-    if _group.name == "H3A":
-        groupDatasheetGenerator.generatePDF(_group)
-#for _student in dataContainer.DataContainer.instance.students:
+#for _group in dataContainer.DataContainer.instance.groups:
+#    if _group.name == "H3A":
+#        groupDatasheetGenerator.generatePDF(_group)
+for _student in dataContainer.DataContainer.instance.students:
     #if(_student.group.name == "H3A"):
-        #studentDatasheetGenerator.generatePDF(_student)
+    studentDatasheetGenerator.generatePDF(_student)

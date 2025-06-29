@@ -3,6 +3,9 @@ from reportlab.pdfgen import canvas
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
 from datetime import datetime
+from reportlab.platypus import Paragraph
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.styles import ParagraphStyle
 
 from dataContainer import DataContainer
 from reportlab.graphics.charts.barcharts import VerticalBarChart
@@ -28,6 +31,15 @@ def generatePDF(_student):
     #generate document
     c = canvas.Canvas(_studentName + "-studentDatasheet.pdf", pagesize=A4)
     width,height = A4
+
+    ###############################################################################
+    #                               stylesheet                                    #
+    ###############################################################################
+    #TODO: implement custom stylesheet
+    sampleSheet = getSampleStyleSheet()
+    titleStyle = sampleSheet['Normal']
+    #titleStyle[""]
+
     
     ###############################################################################
     #                               cover page                                    #
@@ -35,13 +47,19 @@ def generatePDF(_student):
     #Top text:
     c.setLineWidth(14)
     
-    groupNameText = c.beginText(width*0.1,height*0.8)
-    groupNameText.setFont("Helvetica",72)
-    groupNameText.setFillColor(colors.HexColor(DataContainer.instance.colorHex1))
-    groupNameText.textLine(_studentName)
-    groupNameText.setTextOrigin(width/2-groupNameText.getCursor()[0]/2,height*0.8)
-    c.drawText(groupNameText)
-    infoText = c.beginText(width*0.1,height*0.7)
+    firstNameText = c.beginText(width*0.1,height*0.79)   
+    firstNameText.setFont("Helvetica",72)
+    firstNameText.setFillColor(colors.HexColor(DataContainer.instance.colorHex1))
+    firstNameText.textLine(_student.firstName)
+    firstNameText.setTextOrigin(width/2-firstNameText.getCursor()[0]/2,height*0.8)
+    c.drawText(firstNameText)
+    lastNameText = c.beginText(width*0.1,height*0.7)   
+    lastNameText.setFont("Helvetica",72)
+    lastNameText.setFillColor(colors.HexColor(DataContainer.instance.colorHex1))
+    lastNameText.textLine(_student.surName)
+    lastNameText.setTextOrigin(width/2-lastNameText.getCursor()[0]/2,height*0.8)
+    c.drawText(lastNameText)
+    infoText = c.beginText(width*0.1,height*0.65)
     infoText.setFont("Helvetica",24)
     infoText.setFillColor(colors.HexColor(DataContainer.instance.colorHex3))
     infoText.textLine(DataContainer.studentDatasheetTitle + " " + DataContainer.subject)
@@ -186,7 +204,7 @@ def generateTestScorePage(_canvas,_test,_student,_width,_height):
     averagesTitleText.setFont("Helvetica",24)
     averagesTitleText.setFillColor(colors.HexColor(DataContainer.instance.colorHex1))
     if(_test.version != None):
-        averagesTitleText.textLine(DataContainer.instance.groupDatasheetTitle3 +" " +_test.name + " " + _test.version)
+        averagesTitleText.textLine(DataContainer.instance.groupDatasheetTitle3 +" " + str(_test.name) + " " + str(_test.version))
     else:
         averagesTitleText.textLine(DataContainer.instance.groupDatasheetTitle3 +" " +_test.name)
     _canvas.drawText(averagesTitleText)
